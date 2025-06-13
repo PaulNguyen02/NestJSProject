@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
-import { UsersModule } from './users/users.module';
-import { BooksModule } from './books/books.module';
-import { InvoiceModule } from './invoice/invoice.module';
-import { InvoiceDetailModule } from './invoice_detail/invoice_detail.module';
+import { UsersModule } from './users/modules/users.module';
+import { BooksModule } from './books/modules/books.module';
+import { InvoiceModule } from './invoice/modules/invoice.module';
+import { InvoiceDetailModule } from './invoice_detail/modules/invoice_detail.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { AuthModule } from './auth/auth.module';
+import { AuthModule } from './auth/modules/auth.module';
 @Module({
   imports: [
     UsersModule, 
@@ -28,8 +28,7 @@ import { AuthModule } from './auth/auth.module';
         synchronize: false,   //Tự độn tạo bảng và migrations qua csdl nếu là true
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
         options: {
-          trustServerCertificate: true,
-          //trustedConnection: true,
+          trustServerCertificate: true
         },
       }),
     }),
