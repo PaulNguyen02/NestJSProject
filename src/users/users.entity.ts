@@ -17,5 +17,8 @@ export class Users{
     Phone: string;
 
     @Column()
+    Pass: string;
+
+    @Column()
     Roles: boolean;
 }

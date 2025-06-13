@@ -11,6 +11,7 @@ CREATE TABLE Users (
     FullName NVARCHAR(100),
     Email NVARCHAR(100),
     Phone NVARCHAR(20),
+    Pass VARCHAR(255),
     Roles BIT
 );
 
@@ -43,9 +44,9 @@ CREATE TABLE Invoice_Detail (
     FOREIGN KEY (BookID) REFERENCES Books(BookID)
 );
 
-INSERT INTO Users (UserName, FullName, Email, Phone, Roles) VALUES
-('VanA', N'Nguyễn Văn A', 'a@example.com', '0123456789',0),
-('ThiB',N'Trần Thị B', 'b@example.com', '0987654321',0);
+INSERT INTO Users (UserName, FullName, Email, Phone, Pass ,Roles) VALUES
+('VanA', N'Nguyễn Văn A', 'a@example.com', '0123456789','12345678',0),
+('ThiB',N'Trần Thị B', 'b@example.com', '0987654321','12345678',0);
 
 -- Th�m s�ch
 INSERT INTO Books (Title, Author, Price, Stock, IsDelete) VALUES

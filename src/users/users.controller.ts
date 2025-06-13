@@ -13,7 +13,8 @@ import { UsersService } from './users.service';
 import { Users } from './users.entity';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { CheckNumberPipe } from './checking_pipe';
-import { PaginationQueryDto } from './pagination_dto';
+import { UserDTO } from './user.dto';
+import { ApiBody } from '@nestjs/swagger';
 @ApiTags('/v1/users') // nhóm hiển thị trong Swagger
 @Controller('/v1/users')
 export class UsersController {
@@ -31,6 +32,7 @@ export class UsersController {
     }
 
     @Post()
+    @ApiBody({ type: UserDTO })
     @ApiOperation({ summary: 'Create User' })
     create(@Body(CheckNumberPipe) user: Partial<Users>): Promise<Users> {
         return this.userService.create(user);

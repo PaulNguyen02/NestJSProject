@@ -7,13 +7,17 @@ import {
     Res,
     Put,
     Delete, 
-    ParseIntPipe
+    ParseIntPipe,
+    UploadedFile,
+    UseInterceptors,
 } from '@nestjs/common';
 import { BooksService } from './books.service';
 import { Books } from './books.entity';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { CheckStringPipe } from './checking_pipe';
-import { Response } from 'express';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import * as path from 'path';
 
 @ApiTags('/v1/books')
 @Controller('/v1/books')
@@ -49,4 +53,6 @@ export class BooksController {
         return this.bookService.remove(+BookId);
     }
 
+    
+    
 }

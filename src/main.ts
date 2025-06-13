@@ -14,7 +14,13 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document); 
+  SwaggerModule.setup('api', app, document,{
+      swaggerOptions: {
+      docExpansion: 'none', // hoặc 'list' hoặc 'full' để thử
+      defaultModelsExpandDepth: -1,
+      persistAuthorization: true,
+    },
+  }); 
 
   await app.listen(process.env.PORT ?? 3000);
 }
