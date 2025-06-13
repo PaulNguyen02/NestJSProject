@@ -9,6 +9,7 @@ import {PaginationController} from './users_pagination.controller';
 @Module({
   imports: [TypeOrmModule.forFeature([Users])],
   controllers: [UsersController, ExportController, PaginationController],
-  providers: [UsersService, CachingService]
+  providers: [UsersService, CachingService],
+  exports: [UsersService],
 })
 export class UsersModule {}

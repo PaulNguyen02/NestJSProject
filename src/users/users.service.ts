@@ -7,6 +7,7 @@ import { PaginationQueryDto } from './pagination_dto';
 import { CachingService } from './user_caching';
 import { Workbook } from 'exceljs';
 import { Response } from 'express';
+import * as bcrypt from 'bcrypt';
 @Injectable()
 export class UsersService {
     constructor(
@@ -34,8 +35,32 @@ export class UsersService {
         return this.usersRepository.findOne({ where: { UserId } });
     }
 
-    create(user: Partial<Users>): Promise<Users> {  //Partial là tạo ra 1 object nơi các thuôc tính nó đã tồn tại
+    /*create(user: Partial<Users>): Promise<Users> {  //Partial là tạo ra 1 object nơi các thuôc tính nó đã tồn tại
         return this.usersRepository.save(user);
+    }*/
+   async create(user: Partial<Users>): Promise<Users> {
+        // 1. Kiểm tra username có tồn tại chưa
+        const existing = await this.usersRepository.findOne({
+            where: { UserName: user.UserName },
+        });
+        if (existing) {
+            throw new Error('Username already exists');
+        }
+        if (!user.Pass) {
+            throw new Error('Password is required');
+        }
+        // 2. Băm mật khẩu
+        const salt = await bcrypt.genSalt();
+        const hashedPassword = await bcrypt.hash(user.Pass, salt);
+
+        // 3. Tạo user mới
+        const newUser = this.usersRepository.create({
+            ...user,
+            Pass: hashedPassword,
+        });
+
+        // 4. Lưu vào DB
+        return this.usersRepository.save(newUser);
     }
 
     async update(UserId: number, updateData: Partial<Users>): Promise<Users> {
@@ -95,5 +120,9 @@ export class UsersService {
         res.setHeader('Content-Disposition', 'attachment; filename=users.xlsx');
         await workbook.xlsx.write(res);
         res.end();
+    }
+
+    async findByUsername(UserName: string): Promise<Users | null> {
+        return this.usersRepository.findOne({ where: { UserName } });
     }
 }

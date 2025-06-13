@@ -6,7 +6,7 @@ import { NotFoundException } from '@nestjs/common';
 import { CachingService } from './books_caching';
 import { Workbook } from 'exceljs';
 import { Response } from 'express';
-import * as fs from 'fs';
+import * as XLSX from 'xlsx';
 
 @Injectable()
 export class BooksService {
@@ -85,27 +85,19 @@ export class BooksService {
     }
 
 
-    async importUsersFromExcel(filePath: string): Promise<any> {
-        const books: Partial<Books>[] = [];
-        const workbook = new Workbook();
-        await workbook.xlsx.readFile(filePath);
-        const worksheet = workbook.getWorksheet('Books'); // tên sheet
+    async importUsersFromExcel(filePath: string): Promise<{ inserted: number }> {
+        const workbook = XLSX.readFile(filePath);
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        const data: any[] = XLSX.utils.sheet_to_json(sheet);        //return Json data
 
-        if (!worksheet) {
-            throw new Error('Sheet "Users" not found in the Excel file');
-        }
-        worksheet.eachRow((row, rowNumber) => {
-            if (!row || !row.values) return;
-            const values = row.values as (string | number | null)[];
-            const [BookId, Title , Author, Stock, Price] = values.slice(1);
-            if (Title && Author) {
-                books.push({
-                    Title: String(Title),
-                    Author: String(Author),
-                    Stock: Number(Stock),
-                    Price: Number(Price)
-                });
-            } 
-        });
-    }
+         const books = data.map((row: any) => ({
+            Title: row.Title,
+            Author: row.Author,
+            Price: row.Price,
+            Stock: row.Stock
+        }));
+
+        const result = await this.booksRepository.save(books);
+        return { inserted: result.length };
+  }
 }
