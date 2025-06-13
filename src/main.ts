@@ -10,7 +10,6 @@ async function bootstrap() {
     .setTitle('API bookstore')
     .setDescription('Swagger Doc for Bookstore API')
     .setVersion('1.0')
-    .addTag('books') // Tùy chọn
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
