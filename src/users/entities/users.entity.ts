@@ -21,4 +21,10 @@ export class Users{
 
     @Column()
     Roles: boolean;
+
+    @Column({ nullable: true })
+    resetPasswordToken: string;
+
+    @Column({ type: 'timestamp', nullable: true })
+    resetPasswordExpires: Date | null;
 }

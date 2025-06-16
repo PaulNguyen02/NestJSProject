@@ -1,14 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Users } from '../entities/users.entity';
 import { NotFoundException } from '@nestjs/common';
-import { PaginationQueryDto } from '../dto/pagination_dto';
-import { CachingService } from '../cache/user_caching';
+import { plainToInstance } from 'class-transformer';
 import { Workbook } from 'exceljs';
 import { Response } from 'express';
 import * as bcrypt from 'bcrypt';
 import * as XLSX from 'xlsx';
+import { Users } from '../entities/users.entity';
+import { CachingService } from '../cache/user_caching';
+import { PaginationQueryDto, ExportUserDTO, ImportUserDTO } from '../../dto/userdto/user.dto';
 @Injectable()
 export class UsersService {
     constructor(
@@ -17,7 +18,7 @@ export class UsersService {
     private readonly cachingService: CachingService
     ){}
 
-    async getAll(): Promise<Users[]>{
+    async getAll(): Promise<ExportUserDTO[]>{
         const cacheKey = 'users:all';
 
         // Kiểm tra cache trước
@@ -28,18 +29,26 @@ export class UsersService {
         }
 
         const users = await this.usersRepository.find();
-        await this.cachingService.set(cacheKey, users, 60); // TTL: 60 giây
-        return users;
+        const result = plainToInstance(ExportUserDTO, users, {
+            excludeExtraneousValues: true,
+        });
+        await this.cachingService.set(cacheKey, result, 60); // TTL: 60 giây
+        return result;
     }
 
-    async findOne(UserId: number): Promise<Users|null> {
+    async findOne(UserId: number): Promise<Users|null> {     
         return this.usersRepository.findOne({ where: { UserId } });
     }
 
-    /*create(user: Partial<Users>): Promise<Users> {  //Partial là tạo ra 1 object nơi các thuôc tính nó đã tồn tại
-        return this.usersRepository.save(user);
-    }*/
-   async create(user: Partial<Users>): Promise<Users> {
+    async findEmail(Email: string): Promise<Users|null> {
+        return this.usersRepository.findOne({ where: { Email } });
+    }
+
+    async findResetPassToken(resetPasswordToken: string): Promise<Users|null> {
+        return this.usersRepository.findOne({ where: { resetPasswordToken } });
+    }
+
+   async create(user: Partial<ImportUserDTO>): Promise<Users> {
         // 1. Kiểm tra username có tồn tại chưa
         const existing = await this.usersRepository.findOne({
             where: { UserName: user.UserName },
@@ -54,9 +63,11 @@ export class UsersService {
         const salt = await bcrypt.genSalt();
         const hashedPassword = await bcrypt.hash(user.Pass, salt);
 
+        const userEntity = plainToInstance(Users, user);
+
         // 3. Tạo user mới
         const newUser = this.usersRepository.create({
-            ...user,
+            ...userEntity,
             Pass: hashedPassword,
         });
 
@@ -64,13 +75,14 @@ export class UsersService {
         return this.usersRepository.save(newUser);
     }
 
-    async update(UserId: number, updateData: Partial<Users>): Promise<Users> {
+    async update(UserId: number, updateData: Partial<ImportUserDTO>): Promise<Users> {
         const existingUser = await this.usersRepository.findOne({ where: { UserId } });
 
         if (!existingUser) {
             throw new NotFoundException(`User with id ${UserId} not found`);
         }
-        const updatedUser = this.usersRepository.merge(existingUser, updateData);
+        const newupdate = plainToInstance(Users, updateData);
+        const updatedUser = this.usersRepository.merge(existingUser, newupdate);
         return await this.usersRepository.save(updatedUser);
     }
 
@@ -80,11 +92,11 @@ export class UsersService {
 
     async pagination(query: PaginationQueryDto) {
         const { limit, offset } = query;
-        const [data, total] = await this.usersRepository.findAndCount({
+        const [users, total] = await this.usersRepository.findAndCount({
             take: limit,
             skip: offset
         });
-
+        const data = plainToInstance(ExportUserDTO,users,{excludeExtraneousValues: true,});
         return {
             data,
             total,

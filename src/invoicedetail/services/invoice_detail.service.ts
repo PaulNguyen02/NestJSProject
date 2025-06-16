@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Invoice_Detail } from '../entites/invoice_detail.entity';
+import { Invoice_Detail } from '../entites/invoicedetail.entity';
 import { CachingService } from '../cache/invoicedetail_caching';
 @Injectable()
 export class InvoiceDetailService {
@@ -24,9 +24,5 @@ export class InvoiceDetailService {
         }
         async findOne(InvoiceDetailId: number): Promise<Invoice_Detail|null> {
                 return this.invoice_detailRepository.findOne({ where: { InvoiceDetailId } });
-        }
-    
-        create(invoice_detail: Partial<Invoice_Detail>): Promise<Invoice_Detail> {  //Partial là tạo ra 1 object nơi các thuôc tính nó đã tồn tại
-                return this.invoice_detailRepository.save(invoice_detail);
         }
 }

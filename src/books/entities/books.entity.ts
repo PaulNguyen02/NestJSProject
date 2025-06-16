@@ -18,5 +18,8 @@ export class Books{
     Stock: number;
 
     @Column()
+    Images: string;
+
+    @Column()
     IsDelete: boolean;
 }

@@ -12,6 +12,8 @@ CREATE TABLE Users (
     Email NVARCHAR(100),
     Phone NVARCHAR(20),
     Pass VARCHAR(255),
+    ResetPasswordToken VARCHAR(255),
+    ResetPasswordExpires DATETIME,
     Roles BIT
 );
 
@@ -22,6 +24,7 @@ CREATE TABLE Books (
     Author NVARCHAR(100),
     Price DECIMAL(10, 2),
     Stock INT,
+    Images VARCHAR(255),
     IsDelete BIT
 );
 

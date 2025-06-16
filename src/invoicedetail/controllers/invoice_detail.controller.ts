@@ -1,11 +1,10 @@
 import { Controller, Get, Post, Body, Param, InternalServerErrorException, ParseIntPipe } from '@nestjs/common';
-import { InvoiceDetailService } from '../services/invoice_detail.service';
-import { Invoice_Detail } from '../entites/invoice_detail.entity';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
-import { CheckNumberPipe } from '../pipes/checking_pipe';
+import { InvoiceDetailService } from '../services/invoice_detail.service';
+import { Invoice_Detail } from '../entites/invoicedetail.entity';
 
-@ApiTags('/v1/invoice-detail')
-@Controller('/v1/invoice-detail')
+@ApiTags('invoicedetail')
+@Controller('invoicedetail')
 export class InvoiceDetailController {
     constructor(private readonly invoice_detailService: InvoiceDetailService) {}
         @Get()
@@ -25,16 +24,6 @@ export class InvoiceDetailController {
                 return this.invoice_detailService.findOne(+InvoiceDetailId);
             }catch(error){
                 throw new InternalServerErrorException('Không thể xác định hóa đơn');
-            }
-        }
-    
-        @Post()
-        @ApiOperation({ summary: 'Create Invoice Detail' })
-        create(@Body(CheckNumberPipe) invoice_detail: Partial<Invoice_Detail>): Promise<Invoice_Detail> {            
-            try{
-                return this.invoice_detailService.create(invoice_detail);
-            }catch(error){
-                throw new InternalServerErrorException('Không thể tạo CT hóa đơn');
             }
         }
     

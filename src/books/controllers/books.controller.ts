@@ -3,8 +3,7 @@ import {
     Get, 
     Post, 
     Body, 
-    Param, 
-    Res,
+    Param,
     Put,
     Delete, 
     ParseIntPipe,
@@ -12,16 +11,17 @@ import {
 } from '@nestjs/common';
 import { BooksService } from '../services/books.service';
 import { Books } from '../entities/books.entity';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ExportBookDTO, ImportBookDTO } from 'src/dto/bookdto/book.dto';
+import { ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
 import { CheckStringPipe } from '../pipes/checking_pipe';
 
-@ApiTags('/v1/books')
-@Controller('/v1/books')
+@ApiTags('books')
+@Controller('books')
 export class BooksController {
     constructor(private readonly bookService: BooksService) {}
     @Get()
     @ApiOperation({ summary: 'Get All Books' })
-    findAll(): Promise<Books[]> {
+    findAll(): Promise<ExportBookDTO[]> {
         try{
             return this.bookService.getAll();
         }
@@ -42,7 +42,8 @@ export class BooksController {
             
     @Post()
     @ApiOperation({ summary: 'Add Book' })
-    create(@Body(CheckStringPipe) book: Partial<Books>): Promise<Books> {
+    @ApiBody({ type: ImportBookDTO })
+    create(@Body(CheckStringPipe) book: Partial<ImportBookDTO>): Promise<Books> {
         try{
             return this.bookService.create(book);
         }
@@ -54,7 +55,8 @@ export class BooksController {
 
     @Put(':id')
     @ApiOperation({ summary: 'Update Book' })
-    update(@Param('id', ParseIntPipe) BookId: number, @Body(CheckStringPipe) user: Partial<Books>){
+    @ApiBody({ type: ImportBookDTO })
+    update(@Param('id', ParseIntPipe) BookId: number, @Body(CheckStringPipe) user: Partial<ImportBookDTO>){
         try{
             return this.bookService.update(BookId, user);            
         }

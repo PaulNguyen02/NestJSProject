@@ -1,5 +1,5 @@
 1. Có CRUD
 2. Có Validate
 3. Import/Export Excel
-4. Login/Auth (JWT)
+4. Login/Auth/ResetPassword (JWT)
 5. Caching (Redis)
