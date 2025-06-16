@@ -2,7 +2,7 @@ import { Controller, Post, Request, UseGuards, Body ,InternalServerErrorExceptio
 import { ApiBody, ApiOperation } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from '../services/auth.service';
-import { CheckNumberPipe } from 'src/users/pipes/checking_pipe';
+import { CheckNumberPipe } from 'src/users/pipes/checkingpipe';
 import { UsersService } from 'src/users/services/users.service';
 import { Users } from 'src/users/entities/users.entity';
 import { LoginDto } from 'src/dto/authdto/auth.dto';

@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { UsersModule } from './users/modules/users.module';
 import { BooksModule } from './books/modules/books.module';
 import { InvoiceModule } from './invoice/modules/invoice.module';
-import { InvoiceDetailModule } from './invoicedetail/modules/invoice_detail.module';
+import { InvoiceDetailModule } from './invoicedetail/modules/invoicedetail.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from './auth/modules/auth.module';

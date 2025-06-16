@@ -13,7 +13,7 @@ import { BooksService } from '../services/books.service';
 import { Books } from '../entities/books.entity';
 import { ExportBookDTO, ImportBookDTO } from 'src/dto/bookdto/book.dto';
 import { ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
-import { CheckStringPipe } from '../pipes/checking_pipe';
+import { CheckStringPipe } from '../pipes/checkingpipe';
 
 @ApiTags('books')
 @Controller('books')

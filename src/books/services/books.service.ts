@@ -7,7 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { NotFoundException } from '@nestjs/common';
 import { Books } from '../entities/books.entity';
 import { plainToInstance } from 'class-transformer';
-import { CachingService } from '../cache/books_caching';
+import { CachingService } from '../cache/bookscaching';
 import { ExportBookDTO, ImportBookDTO } from 'src/dto/bookdto/book.dto';
 @Injectable()
 export class BooksService {
