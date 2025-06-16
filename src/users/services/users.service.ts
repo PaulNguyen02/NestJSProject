@@ -8,7 +8,7 @@ import { Response } from 'express';
 import * as bcrypt from 'bcrypt';
 import * as XLSX from 'xlsx';
 import { Users } from '../entities/users.entity';
-import { CachingService } from '../cache/user_caching';
+import { CachingService } from '../cache/user.caching';
 import { PaginationQueryDto, ExportUserDTO, ImportUserDTO } from '../../dto/userdto/user.dto';
 @Injectable()
 export class UsersService {

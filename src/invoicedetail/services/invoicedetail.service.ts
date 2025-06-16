@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Invoice_Detail } from '../entites/invoicedetail.entity';
-import { CachingService } from '../cache/invoicedetail_caching';
+import { CachingService } from '../cache/invoicedetail.caching';
 @Injectable()
 export class InvoiceDetailService {
     constructor(

@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { plainToInstance } from 'class-transformer';
 import { Invoice } from '../entities/invoice.entity';
-import { CachingService } from '../cache/invoice_caching';
+import { CachingService } from '../cache/invoicecaching';
 import { UsersService } from 'src/users/services/users.service';
 import { CreateInvoiceDto } from './../../dto/invoicedto/createinvoice.dto';
 import { InvoiceResponseDto, InvoiceResponseDetailDto } from './../../dto/invoicedto/invoiceresponse.dto';

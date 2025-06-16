@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
 import { Users } from '../entities/users.entity';
-import { CheckNumberPipe } from '../pipes/checking_pipe';
+import { CheckNumberPipe } from '../pipes/checkingpipe';
 import { UsersService } from '../services/users.service';
 import { ExportUserDTO, ImportUserDTO } from 'src/dto/userdto/user.dto';
 

@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Param, InternalServerErrorException, ParseIntPipe } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
-import { InvoiceDetailService } from '../services/invoice_detail.service';
+import { InvoiceDetailService } from '../services/invoicedetail.service';
 import { Invoice_Detail } from '../entites/invoicedetail.entity';
 
 @ApiTags('invoicedetail')
