@@ -1,10 +1,11 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
+  const prefix = "api/v1";
   const app = await NestFactory.create(AppModule);
+  app.setGlobalPrefix(prefix);
   // Cấu hình Swagger
   const config = new DocumentBuilder()
     .setTitle('API bookstore')
@@ -21,6 +22,7 @@ async function bootstrap() {
     },
   }); 
 
+  SwaggerModule.setup(prefix + '/docs', app, document); //Hiển thị lên giao diện của swagger
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();

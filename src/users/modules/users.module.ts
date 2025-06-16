@@ -1,15 +1,14 @@
 import { Module } from '@nestjs/common';
-import { UsersController } from '../controllers/users.controller';
-import { ImportController } from '../controllers/users_import.controller';
-import {ExportController} from '../controllers/users_export.controller';
 import { UsersService } from '../services/users.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Users } from '../entities/users.entity'
 import { CachingService } from '../cache/user_caching';
-import {PaginationController} from '../controllers/users_pagination.controller';
+import { UsersController } from '../controllers/users.controller';
+import { UsersReportController } from '../controllers/users_report.controller';
+import {UsersPaginationController} from '../controllers/users_pagination.controller';
 @Module({
   imports: [TypeOrmModule.forFeature([Users])],
-  controllers: [UsersController, ExportController, ImportController, PaginationController],
+  controllers: [UsersController, UsersReportController, UsersPaginationController],
   providers: [UsersService, CachingService],
   exports: [UsersService],
 })

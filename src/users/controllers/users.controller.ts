@@ -1,7 +1,6 @@
 import { 
     Controller, 
-    Get, 
-    Post, 
+    Get,  
     Body, 
     Param, 
     Put,
@@ -9,19 +8,19 @@ import {
     ParseIntPipe, 
     InternalServerErrorException 
 } from '@nestjs/common';
-import { UsersService } from '../services/users.service';
+import { ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
 import { Users } from '../entities/users.entity';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { CheckNumberPipe } from '../pipes/checking_pipe';
-import { UserDTO } from '../dto/user.dto';
-import { ApiBody } from '@nestjs/swagger';
-@ApiTags('/v1/users') // nhóm hiển thị trong Swagger
-@Controller('/v1/users')
+import { UsersService } from '../services/users.service';
+import { ExportUserDTO, ImportUserDTO } from 'src/dto/userdto/user.dto';
+
+@ApiTags('users') // nhóm hiển thị trong Swagger
+@Controller('users')
 export class UsersController {
     constructor(private readonly userService: UsersService) {}
     @Get()
     @ApiOperation({ summary: 'Get All Users' })
-    findAll(): Promise<Users[]> {
+    findAll(): Promise<ExportUserDTO[]> {
         try{
             return this.userService.getAll();            
         }catch(error){
@@ -39,20 +38,12 @@ export class UsersController {
         }
     }
 
-    @Post()
-    @ApiBody({ type: UserDTO })
-    @ApiOperation({ summary: 'Create User' })
-    create(@Body(CheckNumberPipe) user: Partial<Users>): Promise<Users> {
-        try{
-            return this.userService.create(user);
-        }catch(error){
-            throw new InternalServerErrorException('Không thể tạo sách');
-        }
-    }
+    
 
     @Put(':id')
     @ApiOperation({ summary: 'Update User' })
-    update(@Param('id', ParseIntPipe) UserId: number, @Body(CheckNumberPipe) user: Partial<Users>){
+    @ApiBody({ type: ImportUserDTO })
+    update(@Param('id', ParseIntPipe) UserId: number, @Body(CheckNumberPipe) user: Partial<ImportUserDTO>){
         try{
             return this.userService.update(UserId, user);
         }catch(error){

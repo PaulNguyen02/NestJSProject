@@ -2,10 +2,11 @@ import { Module } from '@nestjs/common';
 import { UsersModule } from './users/modules/users.module';
 import { BooksModule } from './books/modules/books.module';
 import { InvoiceModule } from './invoice/modules/invoice.module';
-import { InvoiceDetailModule } from './invoice_detail/modules/invoice_detail.module';
+import { InvoiceDetailModule } from './invoicedetail/modules/invoice_detail.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from './auth/modules/auth.module';
+import { MailerModule } from '@nestjs-modules/mailer';
 @Module({
   imports: [
     UsersModule, 
@@ -31,6 +32,20 @@ import { AuthModule } from './auth/modules/auth.module';
           trustServerCertificate: true
         },
       }),
+    }),
+    MailerModule.forRoot({
+      transport: {
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false,
+        auth: {
+          user: 'your-email@gmail.com',
+          pass: 'your-app-password', // dùng App password chứ không phải mật khẩu gmail thường
+        },
+      },
+      defaults: {
+        from: '"Support" <your-email@gmail.com>',
+      },
     }),
     AuthModule,
   ],

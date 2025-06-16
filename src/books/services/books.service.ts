@@ -1,13 +1,14 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Books } from '../entities/books.entity';
-import { NotFoundException } from '@nestjs/common';
-import { CachingService } from '../cache/books_caching';
+import * as XLSX from 'xlsx';
 import { Workbook } from 'exceljs';
 import { Response } from 'express';
-import * as XLSX from 'xlsx';
-
+import { Repository } from 'typeorm';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { NotFoundException } from '@nestjs/common';
+import { Books } from '../entities/books.entity';
+import { plainToInstance } from 'class-transformer';
+import { CachingService } from '../cache/books_caching';
+import { ExportBookDTO, ImportBookDTO } from 'src/dto/bookdto/book.dto';
 @Injectable()
 export class BooksService {
     constructor(
@@ -16,7 +17,7 @@ export class BooksService {
         private readonly cachingservice: CachingService
     ){}
     
-    async getAll(): Promise<Books[]>{
+    async getAll(): Promise<ExportBookDTO[]>{
         const cacheKey = 'users:all';
 
         // Kiểm tra cache trước
@@ -25,26 +26,31 @@ export class BooksService {
             console.log('Trả dữ liệu từ Redis cache');
             return cached;
         }
+
         const books = await this.booksRepository.find();
-        await this.cachingservice.set(cacheKey, books , 60);
-        return books;
+        const res = plainToInstance(ExportBookDTO, books, {excludeExtraneousValues: true,})
+        await this.cachingservice.set(cacheKey, res , 60);
+        return res;
     }
     
     async findOne(BookId: number): Promise<Books|null> {
         return this.booksRepository.findOne({ where: { BookId } });
     }
     
-    create(Book: Partial<Books>): Promise<Books> {  //Partial là tạo ra 1 object nơi các thuôc tính nó đã tồn tại
-        return this.booksRepository.save(Book);
+    async create(Book: Partial<ImportBookDTO>): Promise<Books> {  //Partial là tạo ra 1 object nơi các thuôc tính nó đã tồn tại
+        const bookEntity = plainToInstance(Books, Book);
+        return this.booksRepository.save(bookEntity);
     }
     
-    async update(BookId: number, UpdateBook: Partial<Books>): Promise<Books> {  //Partial là tạo ra 1 object nơi các thuôc tính nó đã tồn tại
+    async update(BookId: number, UpdateBook: Partial<ImportBookDTO>): Promise<Books> {  //Partial là tạo ra 1 object nơi các thuôc tính nó đã tồn tại
         const existingUser = await this.booksRepository.findOne({ where: { BookId } });      
         if (!existingUser) {
             throw new NotFoundException(`User with id ${BookId} not found`);
         }
 
-        const new_book = this.booksRepository.merge(existingUser, UpdateBook);
+        const newbook = plainToInstance(Books, UpdateBook);
+
+        const new_book = this.booksRepository.merge(existingUser, newbook);
         return await this.booksRepository.save(new_book);
     }
      
