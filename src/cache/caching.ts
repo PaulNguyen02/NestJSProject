@@ -6,7 +6,9 @@ export class CachingService {
   private readonly redis: Redis;
 
   constructor() {
-    this.redis = new Redis({ host: 'localhost', port: 6379 });
+    const host = process.env.REDIS_HOST || 'localhost';
+    const port = parseInt(process.env.REDIS_PORT || '6379', 10);
+    this.redis = new Redis({ host, port });
   }
 
   async get(key: string): Promise<any> {

@@ -1,25 +1,38 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
-
+import { IsString, IsNotEmpty, IsOptional, IsNumber, IsBoolean, Min } from 'class-validator';
 export class ImportBookDTO{
     
     @ApiProperty()
+    @IsString()
+    @IsNotEmpty()
     Title: string;
     
     @ApiProperty()
+    @IsString()
+    @IsNotEmpty()
     Author: string;
     
     @ApiProperty()
+    @IsNumber()
+    @IsNotEmpty()
+    @Min(1000)
     Price: number;
     
     @ApiProperty()
+    @IsNumber()
+    @IsNotEmpty()
+    @Min(0)
     Stock: number;
 
     @ApiProperty()
-    @Expose({ name: 'Images' })
+    @IsString()
+    @IsOptional()
     Images: string;
 
     @ApiProperty()
+    @IsBoolean()
+    @IsNotEmpty()
     IsDelete: boolean;
 
 }

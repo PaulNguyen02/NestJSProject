@@ -8,8 +8,8 @@ import { Response } from 'express';
 import * as bcrypt from 'bcrypt';
 import * as XLSX from 'xlsx';
 import { Users } from '../entities/users.entity';
-import { CachingService } from '../cache/user.caching';
-import { PaginationQueryDto, ExportUserDTO, ImportUserDTO } from '../../dto/userdto/user.dto';
+import { CachingService } from 'src/cache/caching';
+import { PaginationQueryDto, ExportUserDTO, ImportUserDTO, UpdateUserDTO } from '../../dto/userdto/user.dto';
 @Injectable()
 export class UsersService {
     constructor(
@@ -50,7 +50,7 @@ export class UsersService {
 
    async create(user: Partial<ImportUserDTO>): Promise<Users> {
         // 1. Kiểm tra username có tồn tại chưa
-        const existing = await this.usersRepository.findOne({
+        const existing = await this.usersRepository.findOne({ 
             where: { UserName: user.UserName },
         });
         if (existing) {
@@ -75,19 +75,25 @@ export class UsersService {
         return this.usersRepository.save(newUser);
     }
 
-    async update(UserId: number, updateData: Partial<ImportUserDTO>): Promise<Users> {
+    async update(UserId: number, updateData: Partial<UpdateUserDTO>): Promise<Users> {
         const existingUser = await this.usersRepository.findOne({ where: { UserId } });
 
         if (!existingUser) {
             throw new NotFoundException(`User with id ${UserId} not found`);
         }
+
         const newupdate = plainToInstance(Users, updateData);
         const updatedUser = this.usersRepository.merge(existingUser, newupdate);
         return await this.usersRepository.save(updatedUser);
     }
 
-    async remove(UserId: number): Promise<void> {
+    async remove(UserId: number): Promise<ExportUserDTO | null> {
+        const user = this.usersRepository.findOne({where:{UserId}});
+        if(!user){
+            return null;
+        }
         await this.usersRepository.delete(UserId);
+        return user;
     }
 
     async pagination(query: PaginationQueryDto) {

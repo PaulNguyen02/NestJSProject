@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { UsersModule } from './users/modules/users.module';
 import { BooksModule } from './books/modules/books.module';
 import { InvoiceModule } from './invoice/modules/invoice.module';
-import { InvoiceDetailModule } from './invoicedetail/modules/invoicedetail.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from './auth/modules/auth.module';
@@ -12,7 +11,6 @@ import { MailerModule } from '@nestjs-modules/mailer';
     UsersModule, 
     BooksModule, 
     InvoiceModule, 
-    InvoiceDetailModule,
     ConfigModule.forRoot({
       isGlobal: true, // Cho phép dùng ConfigService ở mọi nơi
     }),
@@ -21,11 +19,11 @@ import { MailerModule } from '@nestjs-modules/mailer';
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
         type: 'mssql',
-        host: configService.get<string>('DB_HOST') ?? 'localhost',
-        port: parseInt(configService.get<string>('DB_PORT') ?? '1433', 10),
-        database: configService.get<string>('DB_NAME') ?? 'bookstoredb',
-        username: configService.get<string>('DB_USER') ?? 'sa',
-        password: configService.get<string>('DB_PASS') ?? '12345',
+        host: process.env.DB_HOST,
+        port: parseInt(process.env.DB_PORT || '1433', 10),
+        database: process.env.DB_NAME,
+        username: process.env.DB_USER,
+        password: process.env.DB_PASS,
         synchronize: false,   //Tự độn tạo bảng và migrations qua csdl nếu là true
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
         options: {
@@ -35,12 +33,12 @@ import { MailerModule } from '@nestjs-modules/mailer';
     }),
     MailerModule.forRoot({
       transport: {
-        host: 'smtp.gmail.com',
-        port: 587,
+        host: process.env.MAIL_HOST,
+        port: process.env.MAIL_PORT,
         secure: false,
         auth: {
-          user: 'your-email@gmail.com',
-          pass: 'your-app-password', // dùng App password chứ không phải mật khẩu gmail thường
+          user: process.env.AUTH_USER,
+          pass: process.env.AUTH_PASS, // dùng App password chứ không phải mật khẩu gmail thường
         },
       },
       defaults: {

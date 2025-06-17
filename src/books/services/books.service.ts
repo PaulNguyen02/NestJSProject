@@ -7,7 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { NotFoundException } from '@nestjs/common';
 import { Books } from '../entities/books.entity';
 import { plainToInstance } from 'class-transformer';
-import { CachingService } from '../cache/bookscaching';
+import { CachingService } from '../../cache/caching';
 import { ExportBookDTO, ImportBookDTO } from 'src/dto/bookdto/book.dto';
 @Injectable()
 export class BooksService {
@@ -18,9 +18,7 @@ export class BooksService {
     ){}
     
     async getAll(): Promise<ExportBookDTO[]>{
-        const cacheKey = 'users:all';
-
-        // Kiểm tra cache trước
+        const cacheKey = 'books:all';
         const cached = await this.cachingservice.get(cacheKey);
         if (cached) {
             console.log('Trả dữ liệu từ Redis cache');
@@ -54,8 +52,14 @@ export class BooksService {
         return await this.booksRepository.save(new_book);
     }
      
-    async remove(BookId: number): Promise<void> {
+    async remove(BookId: number): Promise<ExportBookDTO|null> {
+        const book = await this.booksRepository.findOne({ where: { BookId } });
+        if (!book) {
+            return null; 
+        }
+        const res = plainToInstance(ExportBookDTO, book, {excludeExtraneousValues: true,})
         await this.booksRepository.delete(BookId);
+        return res;
     }
 
     async exportBooksToExcel(res: Response): Promise<void> {
@@ -81,10 +85,13 @@ export class BooksService {
         });
 
         res.setHeader(
-        'Content-Type',
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Content-Type',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         );
-        res.setHeader('Content-Disposition', 'attachment; filename=books.xlsx');
+        res.setHeader(
+            'Content-Disposition',
+            'attachment; filename=books.xlsx',
+        );
 
         await workbook.xlsx.write(res);
         res.end();

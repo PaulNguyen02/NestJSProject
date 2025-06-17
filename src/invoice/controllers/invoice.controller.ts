@@ -9,7 +9,6 @@ import {
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
 import { InvoiceService } from '../services/invoice.service';
-import { CheckDatePipe } from '../pipes/checkingpipe'
 import { CreateInvoiceDto } from 'src/dto/invoicedto/createinvoice.dto';
 import { InvoiceResponseDto } from 'src/dto/invoicedto/invoiceresponse.dto';
 import { InvoiceResponseDetailDto } from './../../dto/invoicedto/invoiceresponse.dto';
@@ -19,7 +18,7 @@ export class InvoiceController {
     constructor(private readonly invoiceService: InvoiceService) {}
         @Get()
         @ApiOperation({ summary: 'Get All Invoices' })
-        findAll(): Promise<InvoiceResponseDetailDto[]> {
+        findAll(): Promise<InvoiceResponseDto[]> {
             try{
                 return this.invoiceService.getAll();
             }catch(error){
@@ -29,7 +28,7 @@ export class InvoiceController {
         
         @Get(':id')
         @ApiOperation({ summary: 'Search Invoice' })
-        findOne(@Param('id', ParseIntPipe) InvoiceId: number): Promise<InvoiceResponseDetailDto|null> {
+        findOne(@Param('id', ParseIntPipe) InvoiceId: number): Promise<InvoiceResponseDto|null> {
             try{
                 return this.invoiceService.findOne(+InvoiceId);
             }catch(error){
@@ -40,7 +39,7 @@ export class InvoiceController {
         @Post()
         @ApiOperation({ summary: 'Create Invoice' })
         @ApiBody({ type: CreateInvoiceDto })
-        create(@Body(CheckDatePipe) invoice: CreateInvoiceDto): Promise<InvoiceResponseDto> {
+        create(@Body() invoice: CreateInvoiceDto): Promise<InvoiceResponseDto> {
             try{
                 return this.invoiceService.create(invoice);
             }catch(error){
