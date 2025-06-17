@@ -19,7 +19,7 @@ export class InvoiceService {
         private readonly bookService: BooksService
     ){}
     async getAll(): Promise<InvoiceResponseDto[]>{
-        const cacheKey = 'users:all';
+        const cacheKey = 'invoices:all';
 
         // Kiểm tra cache trước
         const cached = await this.cachingserice.get(cacheKey);
