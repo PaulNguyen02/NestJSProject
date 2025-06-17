@@ -1,27 +1,55 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsPositive, Min } from 'class-validator';
+import { IsOptional, IsPositive, IsString, IsEmail, IsPhoneNumber, IsBoolean, Min } from 'class-validator';
 import { Type, Expose } from 'class-transformer';
 export class ImportUserDTO{
 
     @ApiProperty()
+    @IsString()
     UserName: string;
 
     @ApiProperty()
+    @IsString()
     Fullname: string;
 
     @ApiProperty()
+    @IsEmail()
     Email: string;
 
     @ApiProperty()
+    @IsPhoneNumber()
     Phone: string;
 
     @ApiProperty()
+    @IsBoolean()
     Roles: boolean;
 
     @ApiProperty()
+    @IsString()
     Pass: string;
 
 }
+
+export class UpdateUserDTO{
+
+    @ApiProperty()
+    @IsString()
+    Fullname: string;
+
+    @ApiProperty()
+    @IsEmail()
+    Email: string;
+
+    @ApiProperty()
+    @IsPhoneNumber()
+    Phone: string;
+
+    @ApiProperty()
+    @IsBoolean()
+    Roles: boolean;
+
+}
+
+
 
 export class ExportUserDTO{
     @ApiProperty()
@@ -33,7 +61,7 @@ export class ExportUserDTO{
     UserName: string;
 
     @ApiProperty()
-    @Expose({ name: 'FullName' })
+    @Expose({ name: 'Fullname' })
     Fullname: string;
 
     @ApiProperty()

@@ -40,6 +40,10 @@ export class InvoiceResponseDto {
   InvoiceDate: string;
 
   @ApiProperty()
+  @Expose({ name: 'Total' })
+  Total: number;
+
+  @ApiProperty()
   @Expose({ name: 'Details' })
   Details: InvoiceResponseDetailDto[];
 }

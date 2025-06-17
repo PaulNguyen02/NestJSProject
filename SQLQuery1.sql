@@ -17,7 +17,7 @@ CREATE TABLE Users (
     Roles BIT
 );
 
--- B?ng s�ch
+
 CREATE TABLE Books (
     BookID INT PRIMARY KEY IDENTITY(1,1),
     Title NVARCHAR(200),
@@ -28,11 +28,12 @@ CREATE TABLE Books (
     IsDelete BIT
 );
 
--- B?ng h�a ??n
+
 CREATE TABLE Invoice (
     InvoiceID INT PRIMARY KEY IDENTITY(1,1),
     UserID INT,
     InvoiceDate DATETIME DEFAULT GETDATE(),
+    Total DECIMAL(10,2),
     FOREIGN KEY (UserID) REFERENCES Users(UserID)
 );
 
@@ -52,18 +53,7 @@ INSERT INTO Users (UserName, FullName, Email, Phone, Pass ,Roles) VALUES
 ('ThiB',N'Trần Thị B', 'b@example.com', '0987654321','12345678',0);
 
 -- Th�m s�ch
-INSERT INTO Books (Title, Author, Price, Stock, IsDelete) VALUES
-(N'Lập trình C++ cơ bản', N'Nguyễn Nhật', 120000, 10,0),
-(N'Java t? A đến Z', N'Trần Minh', 150000, 5,0),
-(N'Học Python trong 21 ngày', N'Võ Thanh', 180000,8,0);
-
--- T?o h�a ??n
-INSERT INTO Invoice (UserID) VALUES
-(1), -- Hóa đơn của Nguyễn Văn A
-(2); -- Hóa đơn của Trần Thị B
-
--- Chi ti?t h�a ??n
-INSERT INTO Invoice_Detail (InvoiceID, BookID, Quantity, UnitPrice) VALUES
-(1, 1, 2, 120000), -- Mua 2 cu?n C++
-(1, 3, 1, 180000), -- Mua 1 cu?n Python
-(2, 2, 1, 150000); -- Mua 1 cu?n Java
+INSERT INTO Books (Title, Author, Price, Stock, Images, IsDelete) VALUES
+(N'Lập trình C++ cơ bản', N'Nguyễn Nhật', 120000, 10,'https://images.nxbbachkhoa.vn/Picture/2023/10/20/image-20231020183611259.jpg',0),
+(N'Java t? A đến Z', N'Trần Minh', 150000, 5,'https://images.nxbxaydung.com.vn/Picture/2020/biasachnen-0616154230.png',0),
+(N'Học Python trong 21 ngày', N'Võ Thanh', 180000,8,'https://cole.edu.vn/wp-content/uploads/2022/11/sach-hoc-lap-trinh-python.jpg',0);
