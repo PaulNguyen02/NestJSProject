@@ -30,12 +30,12 @@ export class AuthController {
     if (!user) {
       throw new UnauthorizedException('Sai tài khoản hoặc mật khẩu');
     }
-    const token = this.authService.login(user);
+    const token = await this.authService.login(user);
     const isAdmin = user.Roles === true;
     return {
       message: isAdmin ? 'Bạn là admin' : 'Bạn không phải là admin',
       role: isAdmin ? 'admin' : 'user',
-      access_token: (await token).access_token,
+      access_token: token.access_token,
     };
   }
 
@@ -47,7 +47,7 @@ export class AuthController {
     try{
       return this.userService.create(user);
     }catch(error){
-      throw new InternalServerErrorException('Không thể tạo sách');
+      throw new InternalServerErrorException('Không thể đăng ký');
     }
   }
 

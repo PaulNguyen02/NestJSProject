@@ -1,15 +1,20 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { NotFoundException } from '@nestjs/common';
-import { plainToInstance } from 'class-transformer';
+import * as XLSX from 'xlsx';
+import * as bcrypt from 'bcrypt';
 import { Workbook } from 'exceljs';
 import { Response } from 'express';
-import * as bcrypt from 'bcrypt';
-import * as XLSX from 'xlsx';
+import { Injectable } from '@nestjs/common';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { NotFoundException } from '@nestjs/common';
+import { plainToInstance } from 'class-transformer';
 import { Users } from '../entities/users.entity';
 import { CachingService } from 'src/cache/caching';
-import { PaginationQueryDto, ExportUserDTO, ImportUserDTO, UpdateUserDTO } from '../../dto/userdto/user.dto';
+import { 
+    PaginationQueryDto, 
+    ExportUserDTO, 
+    ImportUserDTO, 
+    UpdateUserDTO 
+} from '../../dto/userdto/user.dto';
 @Injectable()
 export class UsersService {
     constructor(
@@ -49,7 +54,6 @@ export class UsersService {
     }
 
    async create(user: Partial<ImportUserDTO>): Promise<Users> {
-        // 1. Kiểm tra username có tồn tại chưa
         const existing = await this.usersRepository.findOne({ 
             where: { UserName: user.UserName },
         });

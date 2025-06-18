@@ -19,7 +19,7 @@ export class InvoiceService {
         private readonly bookService: BooksService
     ){}
     async getAll(): Promise<InvoiceResponseDto[]>{
-        const cacheKey = 'users:all';
+        const cacheKey = 'invoices:all';
 
         // Kiểm tra cache trước
         const cached = await this.cachingserice.get(cacheKey);
@@ -86,6 +86,7 @@ export class InvoiceService {
         }
     }
 
+
     Total(createInvoiceDto: CreateInvoiceDto): number {
         let totalAmount = 0;
         for (const item of createInvoiceDto.Details) {
@@ -100,7 +101,7 @@ export class InvoiceService {
     async create(createInvoiceDto: CreateInvoiceDto): Promise<InvoiceResponseDto> {
         const user = await this.userService.findOne(createInvoiceDto.UserId );
 
-        if (!user) throw new NotFoundException('User not found');
+        if (!user) throw new NotFoundException('Không tìm thấy người dùng');
 
         await this.ReduceBook(createInvoiceDto);
 

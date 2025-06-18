@@ -83,7 +83,6 @@ export class AuthService {
         user.resetPasswordExpires = null;
         await this.userRepository.update(id, user);
       }
-    }
-    
+    }    
   }
 }

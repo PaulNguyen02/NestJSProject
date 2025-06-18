@@ -7,8 +7,7 @@ import {
     Put,
     Delete, 
     Query,
-    Res,
-    ParseIntPipe, 
+    Res, 
     UploadedFile,
     UseInterceptors,
     HttpStatus,
@@ -49,18 +48,18 @@ export class UsersController {
     }
 
     @Get('users')
-          @ApiOperation({ summary: 'Export User' })
-          async exportUsers(@Res() res: Response): Promise<void> {
-            await this.userService.exportUsersToExcel(res);
+    @ApiOperation({ summary: 'Export User' })
+    async exportUsers(@Res() res: Response): Promise<void> {
+        await this.userService.exportUsersToExcel(res);
     }
 
     @Get(':id')
     @ApiOperation({ summary: 'Search User' })
-    findOne(@Param('id', ParseIntPipe) UserId: number): Promise<Users|null> {
+    findOne(@Param('id') UserId: number): Promise<Users|null> {
         try{
             return this.userService.findOne(+UserId);
         }catch(error){
-            throw new InternalServerErrorException('Không thể lấy thông tin sách');
+            throw new InternalServerErrorException('Không thể lấy thông tin người dùng');
         }
     }
 
@@ -84,21 +83,21 @@ export class UsersController {
     @Put(':id')
     @ApiOperation({ summary: 'Update User' })
     @ApiBody({ type: UpdateUserDTO })
-    update(@Param('id', ParseIntPipe) UserId: number, @Body() user: Partial<UpdateUserDTO>){
+    update(@Param('id') UserId: number, @Body() user: Partial<UpdateUserDTO>){
         try{
             return this.userService.update(UserId, user);
         }catch(error){
-            throw new InternalServerErrorException('Không thể cập nhật sách');
+            throw new InternalServerErrorException('Không thể cập nhật người dùng');
         }
     }
 
     @Delete(':id')
     @ApiOperation({ summary: 'Delete User' })
-    remove(@Param('id', ParseIntPipe) UserId: number): Promise<ExportUserDTO | null> {
+    remove(@Param('id') UserId: number): Promise<ExportUserDTO | null> {
         try{
             return this.userService.remove(+UserId);
         }catch(error){
-            throw new InternalServerErrorException('Không thể xóa sách');
+            throw new InternalServerErrorException('Không thể xóa người dùng');
         }
     }
 
