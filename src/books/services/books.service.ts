@@ -21,7 +21,6 @@ export class BooksService {
         const cacheKey = 'books:all';
         const cached = await this.cachingservice.get(cacheKey);
         if (cached) {
-            console.log('Trả dữ liệu từ Redis cache');
             return cached;
         }
 
@@ -67,11 +66,11 @@ export class BooksService {
         const workbook = new Workbook();
         const worksheet = workbook.addWorksheet('Books');
         worksheet.columns = [
-        { header: 'BookId', key: 'BookId', width: 10 },
-        { header: 'Title', key: 'Title', width: 30 },
-        { header: 'Author', key: 'Author', width: 30 },
-        { header: 'Stock', key: 'Stock', width: 20 },
-        { header: 'Price', key: 'Price', width: 20 }
+            { header: 'BookId', key: 'BookId', width: 10 },
+            { header: 'Title', key: 'Title', width: 30 },
+            { header: 'Author', key: 'Author', width: 30 },
+            { header: 'Stock', key: 'Stock', width: 20 },
+            { header: 'Price', key: 'Price', width: 20 }
         ];
         
         books.forEach((book) => {

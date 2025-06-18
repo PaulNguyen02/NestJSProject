@@ -47,7 +47,7 @@ export class AuthController {
     try{
       return this.userService.create(user);
     }catch(error){
-      throw new InternalServerErrorException('Không thể tạo sách');
+      throw new InternalServerErrorException('Không thể đăng ký');
     }
   }
 

@@ -1,4 +1,4 @@
-import { diskStorage, Multer } from 'multer';
+import { diskStorage} from 'multer';
 import { extname } from 'path';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { MulterOptions } from '@nestjs/platform-express/multer/interfaces/multer-options.interface';
